@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="{{ page.lang | default: 'zh' }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page.title }} | Horizon Daily</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --sidebar-width: 280px;
+            --toc-width: 260px;
+            --primary-bg: #0b0f1a;
+            --secondary-bg: #161b22;
+            --accent-color: #38bdf8;
+            --text-main: #e6edf3;
+            --text-dim: #8b949e;
+            --border-color: #30363d;
+            --card-bg: #161b22;
+            --star-color: #e3b341;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--text-main);
+            display: flex;
+            line-height: 1.6;
+        }
+
+        /* --- 左侧边栏 --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            background-color: var(--secondary-bg);
+            border-right: 1px solid var(--border-color);
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .nav-group {
+            margin-bottom: 30px;
+        }
+
+        .nav-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            letter-spacing: 0.1em;
+            margin-bottom: 12px;
+        }
+
+        .nav-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .nav-item {
+            padding: 10px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-main);
+            text-decoration: none;
+            display: block;
+            margin-bottom: 4px;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .nav-item:hover {
+            background-color: rgba(56, 189, 248, 0.1);
+            color: var(--accent-color);
+        }
+
+        .nav-item.active {
+            background-color: rgba(56, 189, 248, 0.15);
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+
+        /* --- 中间内容区 --- */
+        .main-container {
+            margin-left: var(--sidebar-width);
+            margin-right: var(--toc-width);
+            width: 100%;
+            min-height: 100vh;
+            padding: 40px 60px;
+            max-width: 1000px;
+        }
+
+        .content-body h1 {
+            font-size: 2.2rem;
+            margin: 0 0 40px 0;
+            background: linear-gradient(90deg, #fff, #38bdf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+
+        /* 适配 Horizon 生成的 Markdown 结构 */
+        .content-body h2 {
+            font-size: 1.4rem;
+            margin: 40px 0 20px 0;
+            padding: 20px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            color: #fff;
+        }
+
+        .content-body h2 a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .content-body h2 a:hover {
+            color: var(--accent-color);
+        }
+
+        .content-body p {
+            font-size: 1.05rem;
+            color: #d1d5db;
+            margin-bottom: 20px;
+            padding: 0 10px;
+        }
+
+        .content-body ul {
+            padding-left: 25px;
+            color: #d1d5db;
+        }
+
+        .content-body details {
+            margin: 20px 10px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .content-body summary {
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-dim);
+        }
+
+        .content-body blockquote {
+            border-left: 4px solid var(--accent-color);
+            background: rgba(56, 189, 248, 0.05);
+            margin: 20px 10px;
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        /* --- 右侧目录 --- */
+        .toc-panel {
+            width: var(--toc-width);
+            height: 100vh;
+            position: fixed;
+            right: 0;
+            top: 0;
+            padding: 40px 24px;
+            background-color: var(--primary-bg);
+            border-left: 1px solid var(--border-color);
+            overflow-y: auto;
+        }
+
+        .toc-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .toc-link {
+            display: block;
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.85rem;
+            margin-bottom: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: color 0.2s;
+        }
+
+        .toc-link:hover {
+            color: var(--accent-color);
+        }
+
+        /* 隐藏 Horizon 自带的列表目录（因为我们有悬浮目录了） */
+        .content-body > hr + ol, 
+        .content-body > hr + ul {
+            display: none;
+        }
+
+        /* 响应式 */
+        @media (max-width: 1200px) {
+            .toc-panel { display: none; }
+            .main-container { margin-right: 0; padding: 40px 30px; }
+        }
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .main-container { margin-left: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <a href="{{ '/' | relative_url }}" class="logo">
+            <span>🌅</span> Horizon
+        </a>
+
+        <nav class="nav-group">
+            <div class="nav-title">每日速递 ({{ page.lang | default: 'zh' | upcase }})</div>
+            <ul class="nav-list">
+                {% assign posts = site.posts | where: "lang", page.lang | sort: "date" | reverse %}
+                {% for post in posts %}
+                    <a href="{{ post.url | relative_url }}" class="nav-item {% if page.url == post.url %}active{% endif %}">
+                        📅 {{ post.date | date: "%Y-%m-%d" }}
+                    </a>
+                {% endfor %}
+            </ul>
+        </nav>
+
+        <nav class="nav-group">
+            <div class="nav-title">文档</div>
+            <ul class="nav-list">
+                <a href="{{ '/configuration' | relative_url }}" class="nav-item">📖 配置指南</a>
+                <a href="{{ '/scoring' | relative_url }}" class="nav-item">⭐️ 评分机制</a>
+                <a href="{{ '/scrapers' | relative_url }}" class="nav-item">📥 采集器说明</a>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="main-container">
+        <div class="content-body">
+            {{ content }}
+        </div>
+    </main>
+
+    <aside class="toc-panel" id="dynamic-toc">
+        <!-- 动态生成 -->
+    </aside>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const toc = document.getElementById('dynamic-toc');
+            const headers = document.querySelectorAll('.content-body h2');
+            
+            if(headers.length > 0) {
+                toc.innerHTML = '<div class="toc-title">快速浏览</div>';
+                headers.forEach((h2, i) => {
+                    // 为 H2 生成 ID 方便跳转
+                    if(!h2.id) h2.id = 'news-item-' + i;
+                    
+                    const a = document.createElement('a');
+                    a.href = '#' + h2.id;
+                    a.className = 'toc-link';
+                    // 移除标题中的评分星星，保持目录简洁
+                    a.innerText = (i + 1) + ". " + h2.innerText.replace(/⭐️.*$/, '').replace(/^\d+\.\s*/, '').trim();
+                    toc.appendChild(a);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
