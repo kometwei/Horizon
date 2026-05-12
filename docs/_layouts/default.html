@@ -239,9 +239,10 @@
         </a>
 
         <nav class="nav-group">
-            <div class="nav-title">每日速递 ({{ page.lang | default: 'zh' | upcase }})</div>
+            {% assign display_lang = page.lang | default: "zh" %}
+            <div class="nav-title">每日速递 ({{ display_lang | upcase }})</div>
             <ul class="nav-list">
-                {% assign posts = site.posts | where: "lang", page.lang | sort: "date" | reverse %}
+                {% assign posts = site.posts | where: "lang", display_lang | sort: "date" | reverse %}
                 {% for post in posts %}
                     <a href="{{ post.url | relative_url }}" class="nav-item {% if page.url == post.url %}active{% endif %}">
                         📅 {{ post.date | date: "%Y-%m-%d" }}
