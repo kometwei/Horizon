@@ -8,7 +8,7 @@ on:
       threshold:
         description: 'AI Score Threshold (0.0-10.0)'
         required: false
-        default: '8.0'
+        default: '7.0'
       hours:
         description: 'Time Window (Hours)'
         required: false
@@ -42,7 +42,7 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
-        run: uv run horizon --hours ${{ github.event.inputs.hours || '24' }} --threshold ${{ github.event.inputs.threshold || '8.0' }}
+        run: uv run horizon --hours ${{ github.event.inputs.hours || '24' }} --threshold ${{ github.event.inputs.threshold || '7.0' }}
 
       - name: Set current date as environment variable
         run: echo "DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
