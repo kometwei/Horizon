@@ -80,6 +80,13 @@
         "owner": "triton-lang",
         "repo": "triton",
         "enabled": true
+      },
+      {
+        "type": "repo_releases",
+        "username": null,
+        "owner": "ollama",
+        "repo": "ollama",
+        "enabled": true
       }
     ],
     "hackernews": {
@@ -171,6 +178,30 @@
         "url": "https://huyenchip.com/feed.xml",
         "enabled": true,
         "category": "ai"
+      },
+      {
+        "name": "Latent Space",
+        "url": "https://www.latent.space/feed",
+        "enabled": true,
+        "category": "ai"
+      },
+      {
+        "name": "Mitchell Hashimoto",
+        "url": "https://mitchellh.com/feed.xml",
+        "enabled": true,
+        "category": "systems"
+      },
+      {
+        "name": "The Pragmatic Engineer",
+        "url": "https://newsletter.pragmaticengineer.com/feed",
+        "enabled": true,
+        "category": "software"
+      },
+      {
+        "name": "Refactoring",
+        "url": "https://refactoring.fm/feed",
+        "enabled": true,
+        "category": "product"
       }
     ],
     "reddit": {
