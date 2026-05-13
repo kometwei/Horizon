@@ -3,7 +3,16 @@ name: Daily Horizon Summary
 on:
   schedule:
     - cron: '0 0 * * *'  # 每天 UTC 00:00 运行（北京时间上午 8:00）
-  workflow_dispatch:      # 允许手动触发
+  workflow_dispatch:
+    inputs:
+      threshold:
+        description: 'AI Score Threshold (0.0-10.0)'
+        required: false
+        default: '8.0'
+      hours:
+        description: 'Time Window (Hours)'
+        required: false
+        default: '24'
 
 jobs:
   daily-summary:
@@ -33,7 +42,7 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
-        run: uv run horizon --hours 24
+        run: uv run horizon --hours ${{ github.event.inputs.hours || '24' }} --threshold ${{ github.event.inputs.threshold || '8.0' }}
 
       - name: Set current date as environment variable
         run: echo "DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV

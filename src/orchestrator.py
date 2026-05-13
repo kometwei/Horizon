@@ -45,11 +45,12 @@ class HorizonOrchestrator:
             else None
         )
 
-    async def run(self, force_hours: int = None) -> None:
+    async def run(self, force_hours: int = None, force_threshold: float = None) -> None:
         """Execute the complete workflow.
 
         Args:
             force_hours: Optional override for time window in hours
+            force_threshold: Optional override for AI score threshold
         """
         self.console.print("[bold cyan]🌅 Horizon - Starting aggregation...[/bold cyan]\n")
 
@@ -89,7 +90,7 @@ class HorizonOrchestrator:
             self.console.print(f"🤖 Analyzed {len(analyzed_items)} items with AI\n")
 
             # 5. Filter by score threshold
-            threshold = self.config.filtering.ai_score_threshold
+            threshold = force_threshold if force_threshold is not None else self.config.filtering.ai_score_threshold
             important_items = [
                 item for item in analyzed_items
                 if item.ai_score and item.ai_score >= threshold

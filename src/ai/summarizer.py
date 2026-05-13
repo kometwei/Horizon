@@ -25,6 +25,8 @@ LABELS = {
         "discussion": "Discussion",
         "references": "References",
         "tags": "Tags",
+        "summary_stats": "From {total} items, {selected} important content pieces were selected",
+        "empty_stats": "Analyzed {total} items, but none met the importance threshold.",
         "empty_body": (
             "No significant developments today. This might indicate:\n"
             "- A quiet day in your tracked sources\n"
@@ -43,6 +45,8 @@ LABELS = {
         "discussion": "社区讨论",
         "references": "参考链接",
         "tags": "标签",
+        "summary_stats": "从 {total} 条内容中筛选出 {selected} 条重要资讯",
+        "empty_stats": "分析了 {total} 条内容，但没有达到重要性阈值的资讯。",
         "empty_body": (
             "今日暂无重要动态，可能原因：\n"
             "- 今天关注的信息源较平静\n"
@@ -88,9 +92,10 @@ class DailySummarizer:
         if not items:
             return self._generate_empty_summary(date, total_fetched, labels)
 
+        stats_line = labels["summary_stats"].format(total=total_fetched, selected=len(items))
         header = (
             f"# {labels['header']} - {date}\n\n"
-            f"> From {total_fetched} items, {len(items)} important content pieces were selected\n\n"
+            f"> {stats_line}\n\n"
             "---\n\n"
         )
 
@@ -121,16 +126,17 @@ class DailySummarizer:
         if not items:
             return self._generate_empty_summary(date, total_fetched, labels)
 
+        stats_line = labels["summary_stats"].format(total=total_fetched, selected=len(items))
         if language == "zh":
             header = (
                 f"# {labels['header']} - {date}\n\n"
-                f"> 从 {total_fetched} 条内容中筛选出 {len(items)} 条重要资讯。\n\n"
+                f"> {stats_line}。\n\n"
                 "下面会按新闻逐条发送详情，你可以只看感兴趣的标题。\n\n"
             )
         else:
             header = (
                 f"# {labels['header']} - {date}\n\n"
-                f"> Selected {len(items)} important items from {total_fetched} fetched items.\n\n"
+                f"> {stats_line}.\n\n"
                 "Details will be sent item by item so you can read only the topics you care about.\n\n"
             )
 
@@ -240,8 +246,9 @@ class DailySummarizer:
 
     def _generate_empty_summary(self, date: str, total_fetched: int, labels: dict) -> str:
         """Generate summary when no high-scoring items were found."""
+        stats_line = labels["empty_stats"].format(total=total_fetched)
         return (
             f"# {labels['header']} - {date}\n\n"
-            f"> Analyzed {total_fetched} items, but none met the importance threshold.\n\n"
+            f"> {stats_line}\n\n"
             + labels["empty_body"]
         )
